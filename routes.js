@@ -1,10 +1,10 @@
 const express = require('express')
 const Doc = require('./documentModel')
 
-module.exports = (server) => {
+module.exports = (app) => {
 
     const router = express.Router()
-    server.use('/api', router)
+    app.use('/api', router)
 
     router.route('/').get((req, res, next) => {
         res.json({"msg":"Rota principal da aplicação"})
@@ -41,7 +41,8 @@ module.exports = (server) => {
 
         const doc = new Doc({
             name: req.body.name || "Doc sem titulo",
-            content: req.body.content 
+            content: req.body.content,
+            author: req.body.author || "Autor desconhecido" 
         })
 
         doc.save()
@@ -81,7 +82,8 @@ module.exports = (server) => {
 
         Doc.findByIdAndUpdate(req.params.id, {
             name: req.body.name || "Doc sem titulo atualizado",
-            content: req.body.content
+            content: req.body.content,
+            author: req.body.author || "Autor desconhecido"
         }, {new: true})
         .then(doc => {
             if(!doc){

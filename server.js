@@ -1,11 +1,22 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
+const session = require('express-session')
 
 const port = 3000
 const app = express()
 
 app.use(bodyParser.urlencoded({ extended: true}))
 app.use(bodyParser.json())
+
+// tiny, combined, personalizado ({:method :url :response-time})
+app.use(morgan('combined'))
+
+app.use(session({
+    secret: 'i love program',
+    resave: true,
+    saveUninitialized: false
+}))
 
 const dbConfig = require('./dbConfig')
 const mongoose = require('mongoose')
@@ -23,6 +34,7 @@ mongoose.connect(dbConfig.url, {
 
 //rota de teste
 require('./routes')(app)
+require('./userRoute')(app)
 
 
 app.listen(port, () => {
